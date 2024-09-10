@@ -4,6 +4,14 @@ use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+// Route untuk halaman register
+Route::get('/register', function () {
+    return view('register.index', [
+        "active" => "beranda",
+        "title" => "Register",
+    ]);
+});
+
 // Route untuk halaman login
 Route::get('/login', function () {
     return view('login.index', [
@@ -11,13 +19,6 @@ Route::get('/login', function () {
         "title" => "Login",
     ]);
 })->name('login')->middleware('guest');
-
-// Route untuk halaman register
-Route::get('/login', function () {
-    return view('login.index', [
-        "active" => "beranda",
-        "title" => "Login",
-    ]);
 
 // Route untuk memproses login
 Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
