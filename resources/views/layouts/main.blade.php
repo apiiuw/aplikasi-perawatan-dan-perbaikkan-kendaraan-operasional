@@ -13,7 +13,7 @@
         @vite('resources/css/app.css')
     </head>
     <body class="font-sans antialiased">
-        @include('partials.navbar')
+        @include('partials.sidebar')
         @yield('container')
         @include('partials.footer')
     </body>
