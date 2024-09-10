@@ -27,7 +27,7 @@
                     Rafi Rizqallah Andila
                   </p>
                   <p class="text-sm font-medium text-gray-900 truncate" role="none">
-                    rafirizqallahandilla@gmail.com
+                    Software Developer Intern
                   </p>
                 </div>
                 <ul class="py-1" role="none">

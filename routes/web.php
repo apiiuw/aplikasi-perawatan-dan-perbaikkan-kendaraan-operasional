@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Route untuk halaman login
 Route::get('/login', function () {
