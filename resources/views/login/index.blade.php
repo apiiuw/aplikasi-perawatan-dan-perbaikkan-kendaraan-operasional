@@ -48,25 +48,24 @@
                 <span class="w-1/5 border-b lg:w-1/4"></span>
             </div>
     
-            <div class="mt-4">
-                <label class="block mb-2 text-sm font-medium text-gray-600" for="LoggingEmailAddress">Email Address</label>
-                <input id="LoggingEmailAddress" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" />
-            </div>
-    
-            <div class="mt-4">
-                <div class="flex justify-between">
-                    <label class="block mb-2 text-sm font-medium text-gray-600" for="loggingPassword">Password</label>
-                    <a href="#" class="text-xs text-gray-500 hover:underline">Forget Password?</a>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="mt-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-600" for="LoggingEmailAddress">Email</label>
+                    <input id="email" name="email" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="email" required autofocus />
                 </div>
-    
-                <input id="loggingPassword" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" />
-            </div>
-    
-            <div class="mt-6">
-                <button class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
-                    Sign In
-                </button>
-            </div>
+            
+                <div class="mt-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-600" for="loggingPassword">Password</label>
+                    <input id="password" name="password" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="password" required />
+                </div>
+            
+                <div class="mt-6">
+                    <button type="submit" class="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+                        Sign In
+                    </button>
+                </div>
+            </form>            
     
             <div class="flex items-center justify-between mt-4">
                 <span class="w-1/5 border-b md:w-1/4"></span>

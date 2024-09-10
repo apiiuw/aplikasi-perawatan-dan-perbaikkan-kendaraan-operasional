@@ -9,7 +9,7 @@
               </svg>
            </button>
           <a href="#" class="flex ms-2 md:me-24">
-            <img src="{{ asset('assets/Logo/Logo Jasa Raharja Utama dalam pelindunga, prima dalam pelayanan.png') }}" class="h-8 lg:h-10 me-3" alt="FlowBite Logo" />
+            <img src="{{ asset('assets/Logo/Logo Jasa Raharja Utama dalam pelindungan, prima dalam pelayanan.png') }}" class="h-8 lg:h-10 me-3" alt="Jasa Raharja Logo" />
             <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap"></span>
           </a>
         </div>
@@ -38,8 +38,13 @@
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Pengaturan</a>
                   </li>
                   <li>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Keluar Akun</a>
-                  </li>
+                     <form action="{{ route('logout') }}" method="POST" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                         @csrf
+                         <button type="submit" class="w-full text-left text-red-500" role="menuitem">
+                             Keluar Akun
+                         </button>
+                     </form>
+                 </li>                 
                 </ul>
               </div>
             </div>
@@ -52,7 +57,7 @@
      <div class="h-full px-3 pb-4 overflow-y-auto bg-white">
         <ul class="space-y-2 font-medium">
            <li>
-            <a href="/beranda" class="flex items-center p-2 rounded-lg {{ $active === 'beranda' ? 'bg-gray-300 text-black' : 'text-gray-900 hover:bg-gray-200' }} group">     
+            <a href="/" class="flex items-center p-2 rounded-lg {{ $active === 'beranda' ? 'bg-gray-300 text-black' : 'text-gray-900 hover:bg-gray-200' }} group">     
                 <svg class="w-5 h-5 transition duration-75 {{ $active === 'beranda' ? 'text-black' : 'text-gray-500 group-hover:text-black' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                     <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                     <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>

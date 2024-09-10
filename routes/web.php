@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
 
 // Route untuk halaman login
 Route::get('/login', function () {
@@ -10,9 +10,18 @@ Route::get('/login', function () {
     ]);
 })->name('login')->middleware('guest');
 
+// Route untuk memproses login
+Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
+
+// Route untuk logout
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
+
 // Route yang mengharuskan pengguna login terlebih dahulu
 Route::middleware(['auth'])->group(function () {
-    Route::get('/beranda', function () {
+    Route::get('/', function () {
         return view('beranda.index', [
             "active" => "beranda",
             "title" => "Beranda",
@@ -25,9 +34,4 @@ Route::middleware(['auth'])->group(function () {
             "title" => "Peminjaman",
         ]);
     });
-});
-
-// Route fallback untuk mengarahkan ke login jika rute tidak ditemukan
-Route::fallback(function () {
-    return redirect()->route('login');
 });
