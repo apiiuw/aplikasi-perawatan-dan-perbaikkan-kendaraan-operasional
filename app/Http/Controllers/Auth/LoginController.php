@@ -14,21 +14,34 @@ class LoginController extends Controller
     {
         // Validasi data formulir
         $request->validate([
-            'email' => 'required|email',
+            'login' => 'required',
             'password' => 'required',
         ]);
 
-        // Cek kredensial pengguna
-        $credentials = $request->only('email', 'password');
+        $login = $request->input('login');
+        $password = $request->input('password');
 
-        if (Auth::attempt($credentials)) {
+        // Cek apakah input login adalah email atau NRP
+        $user = filter_var($login, FILTER_VALIDATE_EMAIL)
+            ? User::where('email', $login)->first()
+            : User::where('nrp', $login)->first();
+
+        if ($user && Hash::check($password, $user->password)) {
             // Autentikasi berhasil
+            Auth::login($user);
             return redirect()->intended('/');
         }
 
-        // Autentikasi gagal
+        // Jika user ditemukan tetapi password salah
+        if ($user) {
+            return back()->withErrors([
+                'password' => 'Password yang diberikan tidak sesuai.',
+            ])->withInput();
+        }
+
+        // Jika user tidak ditemukan
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+            'login' => 'NRP atau email yang diberikan tidak ditemukan.',
+        ])->withInput();
     }
 }
