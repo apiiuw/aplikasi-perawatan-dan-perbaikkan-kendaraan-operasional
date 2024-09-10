@@ -12,8 +12,21 @@ Route::get('/login', function () {
     ]);
 })->name('login')->middleware('guest');
 
+// Route untuk halaman register
+Route::get('/login', function () {
+    return view('login.index', [
+        "active" => "beranda",
+        "title" => "Login",
+    ]);
+
 // Route untuk memproses login
 Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
+
+// Route untuk login dengan Google
+Route::get('/auth/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.login');
+
+// Route untuk callback dari Google
+Route::get('/auth/callback', [LoginController::class, 'handleGoogleCallback']);
 
 // Route untuk logout
 Route::post('/logout', function () {

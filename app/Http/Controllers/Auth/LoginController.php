@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use Exception;
 
 class LoginController extends Controller
 {
+    // Fungsi login standar dengan NRP atau email
     public function login(Request $request)
     {
         // Validasi data formulir
@@ -44,4 +47,40 @@ class LoginController extends Controller
             'login' => 'NRP atau email yang diberikan tidak ditemukan.',
         ])->withInput();
     }
+
+    // Redirect ke Google untuk login
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // Handle callback dari Google setelah login
+    public function handleGoogleCallback()
+{
+    try {
+        // Mendapatkan user dari Google dengan stateless
+        $googleUser = Socialite::driver('google')->stateless()->user();
+        
+        // Cari atau buat user di database
+        $user = User::where('email', $googleUser->email)->first();
+        
+        if ($user) {
+            Auth::login($user);
+        } else {
+            $user = User::create([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'password' => bcrypt('password'),
+            ]);
+            
+            Auth::login($user);
+        }
+        
+        return redirect()->intended('/');
+    } catch (Exception $e) {
+        return redirect('/login')->with('error', 'Gagal login dengan Google.');
+    }
+}
+
 }
