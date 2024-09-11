@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,6 +12,9 @@ Route::get('/register', function () {
         "title" => "Register",
     ]);
 });
+
+// Route untuk memproses pendaftaran
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
 // Route untuk halaman login
 Route::get('/login', function () {
@@ -42,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
             "active" => "beranda",
             "title" => "Beranda",
         ]);
-    });
+    })->name('beranda');
 
     Route::get('/peminjaman', function () {
         return view('peminjaman.index', [

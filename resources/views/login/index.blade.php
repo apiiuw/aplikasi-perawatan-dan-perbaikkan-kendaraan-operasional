@@ -54,7 +54,7 @@
             <div class="flex items-center justify-between mt-4">
                 <span class="w-1/5 border-b md:w-1/4"></span>
     
-                <a href="#" class="text-xs text-gray-500 uppercase:text-gray-400 hover:underline">Atau Buat Akun</a>
+                <a href="/register" class="text-xs text-gray-500 uppercase:text-gray-400 hover:underline">Atau Buat Akun</a>
     
                 <span class="w-1/5 border-b md:w-1/4"></span>
             </div>
