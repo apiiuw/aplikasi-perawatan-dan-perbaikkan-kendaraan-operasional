@@ -30,8 +30,8 @@
                 @csrf
 
                 <div class="mt-4">
-                    <label class="block mb-2 text-sm font-medium text-gray-600" for="nama_pengabministrasi">Nama Pengabministrasi</label>
-                    <input id="nama_pengabministrasi" name="nama_pengabministrasi" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" value="{{ old('nama_pengabministrasi') }}" required />
+                    <label class="block mb-2 text-sm font-medium text-gray-600" for="nama_pengabiministrasi">Nama Pengabministrasi</label>
+                    <input id="nama_pengabiministrasi" name="nama_pengabiministrasi" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" type="text" value="{{ old('nama_pengabministrasi') }}" required />
                     @error('nama_pengabministrasi')
                         <p class="mt-1 text-red-500 text-sm">{{ $message }}</p>
                     @enderror
