@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>PT Jasa Raharja - {{ $title }}</title>
+        <title>{{ $title }} | PT Jasa Raharja</title>
         <link rel="icon" href="{{ asset('assets/Logo/Jasa Raharja Logo Utama.png') }}">
 
         {{-- CDN --}}
