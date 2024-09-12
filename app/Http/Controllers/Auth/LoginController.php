@@ -56,31 +56,32 @@ class LoginController extends Controller
 
     // Handle callback dari Google setelah login
     public function handleGoogleCallback()
-{
-    try {
-        // Mendapatkan user dari Google dengan stateless
-        $googleUser = Socialite::driver('google')->stateless()->user();
-        
-        // Cari atau buat user di database
-        $user = User::where('email', $googleUser->email)->first();
-        
-        if ($user) {
-            Auth::login($user);
-        } else {
-            $user = User::create([
-                'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'google_id' => $googleUser->id,
-                'password' => bcrypt('password'),
-            ]);
+    {
+        try {
+            // Mendapatkan user dari Google dengan stateless
+            $googleUser = Socialite::driver('google')->stateless()->user();
             
-            Auth::login($user);
+            // Cari user di database dengan email dari Google
+            $user = User::where('email', $googleUser->email)->first();
+            
+            if ($user) {
+                // Jika user ditemukan, login
+                Auth::login($user);
+            } else {
+                // Jika user tidak ditemukan, arahkan ke halaman registrasi
+                // Dengan membawa data nama dan email untuk diisi di formulir pendaftaran
+                return redirect()->route('register')->with([
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'from_google' => true,
+                ]);
+            }
+            
+            return redirect()->intended('/');
+        } catch (Exception $e) {
+            return redirect('/login')->with('error', 'Gagal login dengan Google.');
         }
-        
-        return redirect()->intended('/');
-    } catch (Exception $e) {
-        return redirect('/login')->with('error', 'Gagal login dengan Google.');
     }
-}
+
 
 }

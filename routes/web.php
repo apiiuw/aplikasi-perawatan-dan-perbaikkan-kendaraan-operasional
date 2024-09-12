@@ -48,10 +48,46 @@ Route::middleware(['auth'])->group(function () {
         ]);
     })->name('beranda');
 
-    Route::get('/peminjaman', function () {
-        return view('peminjaman.index', [
-            "active" => "peminjaman",
-            "title" => "Peminjaman",
+    Route::get('/identitas', function () {
+        return view('identitas.index', [
+            "active" => "identitas",
+            "title" => "Identitas",
+        ]);
+    });
+
+    Route::get('/referensi', function () {
+        return view('referensi.index', [
+            "active" => "referensi",
+            "title" => "Referensi",
+        ]);
+    });
+
+    Route::get('/laporan/kategori', function () {
+        return view('laporan.kategori', [
+            "active" => "laporan.kategori",
+            "title" => "Laporan Kategori",
+        ]);
+    });
+
+
+    Route::get('/laporan/transaksi', function () {
+        return view('laporan.transaksi', [
+            "active" => "laporan.transaksi",
+            "title" => "Laporan Transaksi",
+        ]);
+    });
+
+    Route::get('/database/kendaraan', function () {
+        return view('database.kendaraan', [
+            "active" => "database.kendaraan",
+            "title" => "Database Kendaraan",
+        ]);
+    });
+
+    Route::get('/database/transaksi', function () {
+        return view('database.transaksi', [
+            "active" => "database.transaksi",
+            "title" => "Database Transaksi",
         ]);
     });
 });

@@ -11,10 +11,15 @@ use App\Models\User;
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm()
+    public function showRegistrationForm(Request $request)
     {
-        return view('auth.register'); // Pastikan ini sesuai dengan lokasi file view register
+        // Mengambil data nama dan email dari session jika ada
+        $name = $request->session()->get('name', '');
+        $email = $request->session()->get('email', '');
+
+        return view('auth.register', compact('name', 'email')); // Pastikan ini sesuai dengan lokasi file view register
     }
+
 
     public function register(Request $request)
     {
@@ -32,6 +37,9 @@ class RegisterController extends Controller
         // Login pengguna yang baru didaftarkan
         Auth::login($user);
 
+        // Hapus data session setelah pendaftaran berhasil
+        $request->session()->forget(['name', 'email', 'from_google']);
+
         return redirect()->route('beranda');
     }
 
@@ -45,8 +53,23 @@ class RegisterController extends Controller
             'nrp' => ['required', 'numeric', 'unique:users,nrp'],
             'jabatan' => ['required', 'string'],
             'kabupaten_kota' => ['required', 'string'],
+        ], [
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password harus diisi.',
+            'password.min' => 'Password harus memiliki minimal :min karakter.',
+            'password.max' => 'Password tidak boleh lebih dari :max karakter.',
+            'nama_instansi.required' => 'Nama Instansi harus diisi.',
+            'nama_pengabiministrasi.required' => 'Nama Pengabministrasi harus diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'nrp.required' => 'NRP harus diisi.',
+            'nrp.unique' => 'NRP sudah terdaftar.',
+            'jabatan.required' => 'Jabatan harus diisi.',
+            'kabupaten_kota.required' => 'Kabupaten Kota harus diisi.',
+            // Tambahkan pesan error lainnya di sini
         ]);
-    }
+    }    
 
     protected function create(array $data)
     {
@@ -59,5 +82,5 @@ class RegisterController extends Controller
             'jabatan' => $data['jabatan'],
             'kabupaten_kota' => $data['kabupaten_kota'],
         ]);
-    }
+    }    
 }
