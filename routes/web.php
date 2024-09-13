@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\IdentitasController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,6 +56,12 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
+    // Route untuk menampilkan form edit identitas
+    Route::get('/identitas/edit', [IdentitasController::class, 'edit'])->name('identitas.edit');
+
+    // Route untuk melakukan update identitas
+    Route::put('/identitas/update', [IdentitasController::class, 'update'])->name('identitas.update');
+
     Route::get('/referensi', function () {
         return view('referensi.index', [
             "active" => "referensi",
@@ -68,7 +75,6 @@ Route::middleware(['auth'])->group(function () {
             "title" => "Laporan Kategori",
         ]);
     });
-
 
     Route::get('/laporan/transaksi', function () {
         return view('laporan.transaksi', [

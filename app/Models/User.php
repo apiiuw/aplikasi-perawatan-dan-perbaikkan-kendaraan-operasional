@@ -15,6 +15,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // app/Models/User.php
     protected $fillable = [
         'email',
         'nama_instansi',
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'jabatan_atasan',
         'kabupaten_kota',
         'password',
+        'avatar', // Tambahkan di sini
     ];
 
     /**

@@ -12,14 +12,15 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('nama_instansi')->default(''); // Atur default kosong
-            $table->string('nama_pengabiministrasi')->nullable(); // Bisa null
+            $table->string('nama_instansi')->default('');
+            $table->string('nama_pengabiministrasi')->nullable();
             $table->string('nrp');
             $table->string('jabatan');
-            $table->string('nama_atasan')->nullable(); // Bisa null
-            $table->string('nrp_atasan')->nullable(); // Bisa null
-            $table->string('jabatan_atasan')->nullable(); // Bisa null
+            $table->string('nama_atasan')->nullable();
+            $table->string('nrp_atasan')->nullable();
+            $table->string('jabatan_atasan')->nullable();
             $table->string('kabupaten_kota');
+            $table->string('avatar')->nullable(); // Tambahkan ini
             $table->rememberToken();
             $table->timestamps();
         });
