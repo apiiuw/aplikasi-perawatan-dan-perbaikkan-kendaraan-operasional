@@ -18,8 +18,8 @@ class IdentitasController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-
-        // Validasi input
+    
+        // Validasi input tanpa avatar
         $validated = $request->validate([
             'nama_pengabiministrasi' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
@@ -29,33 +29,70 @@ class IdentitasController extends Controller
             'nama_atasan' => 'nullable|string|max:255',
             'nrp_atasan' => 'nullable|string|max:255',
             'jabatan_atasan' => 'nullable|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk avatar
         ]);
-
-        // Update avatar jika ada
+    
+        // Validasi avatar
         if ($request->hasFile('avatar')) {
             $avatarFile = $request->file('avatar');
+            $mimeType = $avatarFile->getClientMimeType();
+            $validMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+    
+            if (!in_array($mimeType, $validMimeTypes)) {
+                return redirect()->route('identitas.edit')->withErrors([
+                    'avatar' => 'Format file tidak dapat diterima. Silakan unggah file dengan format JPEG, PNG, JPG, atau GIF.'
+                ])->withInput();
+            }
+    
+            // Validasi ukuran file
+            if ($avatarFile->getSize() > 2048 * 1024) {
+                return redirect()->route('identitas.edit')->withErrors([
+                    'avatar' => 'Ukuran file terlalu besar. Maksimal ukuran file adalah 2MB.'
+                ])->withInput();
+            }
+    
             $avatarPath = 'assets/image/user_avatar/' . $user->id;
             $avatarName = time() . '.' . $avatarFile->getClientOriginalExtension();
-
+    
             // Buat direktori jika belum ada
             $fullPath = public_path($avatarPath);
             if (!file_exists($fullPath)) {
                 mkdir($fullPath, 0755, true);
             }
-
+    
             // Simpan file ke direktori
             $avatarFile->move($fullPath, $avatarName);
-            $validated['avatar'] = $avatarPath . '/' . $avatarName;
+            $avatarPathFull = $avatarPath . '/' . $avatarName;
+            
+            // Update path avatar pada validasi
+            $validated['avatar'] = $avatarPathFull;
+        } else {
+            // Jika tidak ada file yang diupload, gunakan path lama jika ada
+            $validated['avatar'] = $user->avatar;
         }
-
-        // Update user
-        $user->update($validated);
-
-        return redirect()->route('identitas.edit')->with([
-            'success' => 'Identitas berhasil diperbarui.',
-            'success_type' => 'success'
-        ]);
-    }
+    
+        // Cek apakah ada perubahan
+        $hasChanges = false;
+        foreach ($validated as $key => $value) {
+            if ($user->$key !== $value) {
+                $hasChanges = true;
+                break;
+            }
+        }
+    
+        if ($hasChanges) {
+            // Update user
+            $user->update($validated);
+            return redirect()->route('identitas.edit')->with([
+                'success' => 'Identitas berhasil diperbarui.',
+                'success_type' => 'success'
+            ]);
+        } else {
+            // Jika tidak ada perubahan, kembali ke halaman edit dengan pesan info
+            return redirect()->route('identitas.edit')->with([
+                'success' => 'Tidak ada perubahan yang dilakukan.',
+                'success_type' => 'info'
+            ]);
+        }
+    }    
 
 }
