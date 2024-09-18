@@ -44,7 +44,7 @@
 </div>
 
 <!-- Popup Modal for Edit -->
-<div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+<div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 justify-center items-center hidden">
   <div class="bg-white p-8 rounded-lg shadow-lg">
     <h2 class="text-xl font-bold mb-4">Edit Merk Kendaraan</h2>
     <input type="text" id="editMerkInput" class="w-full p-2 border border-gray-300 rounded mb-4">
