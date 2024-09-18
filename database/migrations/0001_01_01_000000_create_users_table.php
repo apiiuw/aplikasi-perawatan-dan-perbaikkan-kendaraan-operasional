@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('nrp_atasan')->nullable();
             $table->string('jabatan_atasan')->nullable();
             $table->string('kabupaten_kota');
-            $table->string('avatar')->nullable(); // Tambahkan ini
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

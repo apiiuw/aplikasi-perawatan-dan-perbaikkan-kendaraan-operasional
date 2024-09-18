@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\IdentitasController;
+use App\Http\Controllers\ReferensiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,16 +59,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Route untuk menampilkan form edit identitas
     Route::get('/identitas/edit', [IdentitasController::class, 'edit'])->name('identitas.edit');
+    // 
 
     // Route untuk melakukan update identitas
     Route::put('/identitas/update', [IdentitasController::class, 'update'])->name('identitas.update');
+    // 
 
-    Route::get('/referensi', function () {
-        return view('referensi.index', [
-            "active" => "referensi",
-            "title" => "Referensi",
-        ]);
-    });
+    Route::get('/referensi', [ReferensiController::class, 'show'])->name('referensi.show')->middleware('auth');
+
+    Route::post('/referensi/update', [ReferensiController::class, 'update'])->name('referensi.update')->middleware('auth');
+
+    Route::post('/referensi/add', [ReferensiController::class, 'add'])->name('referensi.add')->middleware('auth');
+
+    Route::post('/referensi/remove', [ReferensiController::class, 'remove'])->name('referensi.remove');
 
     Route::get('/laporan/kategori', function () {
         return view('laporan.kategori', [
