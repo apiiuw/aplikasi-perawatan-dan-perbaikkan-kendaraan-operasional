@@ -2,133 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\GoogleSheetService;
 use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Auth;
 
 class ReferensiController extends Controller
 {
-    public function show()
+    protected $googleSheetService;
+
+    public function __construct(GoogleSheetService $googleSheetService)
     {
-        $filePath = public_path('assets/documents/excels/DOKUMEN APLIKASI.xlsx');
-        $spreadsheet = IOFactory::load($filePath);
+        $this->googleSheetService = $googleSheetService;
+    }
 
-        $referensiSheet = $spreadsheet->getSheet(0)->toArray(null, true, true, true);
+    public function index()
+    {
+        $ranges = [
+            'merk_kendaraan' => 'Referensi!A4:B9999',
+            'jenis_perawatan' => 'Referensi!D4:E9999',
+            'bahan_bakar' => 'Referensi!G4:H9999',
+            'bulan' => 'Referensi!J4:K16',
+            'tahun' => 'Referensi!M4:N16',
+        ];
 
-        $merkKendaraanData = array_filter(array_map(function($row) {
-            return [
-                'no' => isset($row['A']) ? $row['A'] : null,
-                'merk' => isset($row['B']) ? $row['B'] : null
-            ];
-        }, $referensiSheet), function($row) {
-            return !empty($row['no']) || !empty($row['merk']);
-        });
+        $data = [];
+        foreach ($ranges as $key => $range) {
+            $data[$key] = $this->googleSheetService->getSheetData($range);
+        }
 
-        $jenisKendaraanData = array_filter(array_map(function($row) {
-            return [
-                'no' => isset($row['D']) ? $row['D'] : null,
-                'jenisKendaraan' => isset($row['E']) ? $row['E'] : null
-            ];
-        }, $referensiSheet), function($row) {
-            return !empty($row['no']) || !empty($row['jenisKendaraan']);
-        });
+        // Dapatkan data pengguna yang sedang login
+        $user = Auth::user();
+        $namaPengabiministrasi = $user->nama_pengabiministrasi;
+        $jabatan = $user->jabatan;
+
+        // Update kolom K29 dengan nama_pengabiministrasi dan K23 dengan jabatan
+        $this->googleSheetService->updateCell('Referensi!K29', $namaPengabiministrasi);
+        $this->googleSheetService->updateCell('Referensi!K23', $jabatan);
 
         return view('referensi.index', [
-            'merkKendaraanData' => $merkKendaraanData,
-            'jenisKendaraanData' => $jenisKendaraanData,
-            'active' => 'referensi',
+            'data' => $data,
             'title' => 'Referensi',
+            'active' => 'referensi',
         ]);
     }
 
-    public function update(Request $request)
+    public function store(Request $request, $type)
     {
-        $validatedData = $request->validate([
-            'merkKendaraanData.*.merk' => 'nullable|string|max:255',
-            'jenisKendaraanData.*.jenisKendaraan' => 'nullable|string|max:255',
-        ]);
-
-        $merkKendaraanData = $request->input('merkKendaraanData', []);
-        $jenisKendaraanData = $request->input('jenisKendaraanData', []);
-
-        $filePath = public_path('assets/documents/excels/DOKUMEN APLIKASI.xlsx');
-        $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getSheet(0);
-
-        // Update data di sheet
-        $rowNumber = 2; // Start from row 2 to skip header
-        foreach ($merkKendaraanData as $data) {
-            $sheet->setCellValue('A' . $rowNumber, $rowNumber - 1); // Set number automatically
-            $sheet->setCellValue('B' . $rowNumber, $data['merk'] ?? '');
-            $rowNumber++;
-        }
-
-        $rowNumber = 2; // Start from row 2 to skip header
-        foreach ($jenisKendaraanData as $data) {
-            $sheet->setCellValue('D' . $rowNumber, $rowNumber - 1); // Set number automatically
-            $sheet->setCellValue('E' . $rowNumber, $data['jenisKendaraan'] ?? '');
-            $rowNumber++;
-        }
-
-        // Simpan file yang sudah diperbarui
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($filePath);
-
-        return redirect()->route('referensi.show')->with('success', 'Data updated successfully');
+        // Validasi dan simpan data ke Google Sheets berdasarkan tipe data
+        $this->googleSheetService->addRow($type, $request->except('_token'));
+        return redirect()->route('referensi.index')->with('success', 'Data berhasil ditambahkan');
     }
 
-    public function add(Request $request)
+    public function update(Request $request, $type, $rowIndex)
     {
-        $filePath = public_path('assets/documents/excels/DOKUMEN APLIKASI.xlsx');
-        $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getSheet(0);
-
-        $merkKendaraanData = $request->input('merkKendaraanData', []);
-        $jenisKendaraanData = $request->input('jenisKendaraanData', []);
-
-        $rowNumber = $sheet->getHighestRow() + 1; // Next available row
-        foreach ($merkKendaraanData as $data) {
-            if (empty($data['merk'])) continue; // Skip empty rows
-            $sheet->setCellValue('A' . $rowNumber, $rowNumber - 1); // Set number automatically
-            $sheet->setCellValue('B' . $rowNumber, $data['merk']);
-            $rowNumber++;
-        }
-
-        $rowNumber = $sheet->getHighestRow() + 1; // Next available row
-        foreach ($jenisKendaraanData as $data) {
-            if (empty($data['jenisKendaraan'])) continue; // Skip empty rows
-            $sheet->setCellValue('D' . $rowNumber, $rowNumber - 1); // Set number automatically
-            $sheet->setCellValue('E' . $rowNumber, $data['jenisKendaraan']);
-            $rowNumber++;
-        }
-
-        // Simpan file yang sudah diperbarui
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($filePath);
-
-        return redirect()->route('referensi.show')->with('success', 'Data added successfully');
+        // Validasi dan update data di Google Sheets berdasarkan tipe data
+        $this->googleSheetService->updateRow($type, $rowIndex, $request->except('_token'));
+        return redirect()->route('referensi.index')->with('success', 'Data berhasil diupdate');
     }
 
-    public function remove(Request $request)
+    public function destroy($type, $rowIndex)
     {
-        $filePath = public_path('assets/documents/excels/DOKUMEN APLIKASI.xlsx');
-        $spreadsheet = IOFactory::load($filePath);
-        $sheet = $spreadsheet->getSheet(0);
-
-        $merkKendaraanIndexes = $request->input('merkKendaraanIndexes', []);
-        $jenisKendaraanIndexes = $request->input('jenisKendaraanIndexes', []);
-
-        foreach ($merkKendaraanIndexes as $index) {
-            $sheet->removeRow($index + 1); // Adjust for header row
-        }
-
-        foreach ($jenisKendaraanIndexes as $index) {
-            $sheet->removeRow($index + 1); // Adjust for header row
-        }
-
-        // Simpan file yang sudah diperbarui
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->save($filePath);
-
-        return redirect()->route('referensi.show')->with('success', 'Data removed successfully');
+        // Hapus data dari Google Sheets berdasarkan tipe data
+        $this->googleSheetService->deleteRow($type, $rowIndex);
+        return redirect()->route('referensi.index')->with('success', 'Data berhasil dihapus');
     }
 }

@@ -14,6 +14,9 @@
         {{-- FONT --}}
         <link href="https://fonts.cdnfonts.com/css/neck-l-sans" rel="stylesheet">
 
+        {{-- ICON --}}
+        <script src="https://kit.fontawesome.com/d7833bfda5.js" crossorigin="anonymous"></script>
+
         @vite('resources/css/app.css')
     </head>
     <body class="font-sans antialiased">

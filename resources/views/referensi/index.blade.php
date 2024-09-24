@@ -2,106 +2,99 @@
 
 @section('container')
 <div class="p-4 sm:ml-64">
-  <div class="p-4 mt-14">
-    @if (session('success'))
-    <div class="p-4 mb-4 text-green-800 bg-green-100 rounded-lg" role="alert">
-        <span class="font-medium">{{ session('success') }}</span>
-    </div>
-    @endif
+    <div class="p-4 mt-14">
+        <div class="container mx-auto p-4">
+            <h1 class="text-2xl font-bold mb-4">Data Referensi</h1>
 
-    <h1 class="text-2xl font-bold mb-4">Merk Kendaraan</h1>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <form action="{{ route('referensi.update') }}" method="POST">
-        @csrf
-        <button type="button" id="addMerkKendaraan" class="bg-blue-600 text-white font-medium py-2 px-4 rounded hover:bg-blue-700 mb-4">Add Merk Kendaraan</button>
-        <table class="w-full text-sm text-left text-gray-500">
-          <thead class="text-xs text-white uppercase bg-blue-500">
-            <tr>
-              <th scope="col" class="px-6 py-3">No</th>
-              <th scope="col" class="px-6 py-3">Merk Kendaraan</th>
-              <th scope="col" class="px-6 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="merkKendaraanTableBody">
-            @foreach ($merkKendaraanData as $index => $row)
-              <tr class="bg-white border-b hover:bg-gray-50">
-                <td class="px-6 py-4">{{ $index + 1 }}</td>
-                <td class="px-6 py-4">{{ $row['merk'] ?? '' }}</td>
-                <td class="px-6 py-4">
-                  <button type="button" class="edit-btn bg-yellow-500 text-white py-1 px-3 rounded" data-index="{{ $index }}">Edit</button>
-                  <button type="button" class="remove-btn bg-red-600 text-white py-1 px-3 rounded" data-index="{{ $index }}">Remove</button>
-                </td>
-              </tr>
+            @foreach(['merk_kendaraan', 'jenis_perawatan', 'bahan_bakar', 'bulan', 'tahun'] as $type)
+                <h2 class="text-xl font-semibold mb-2">{{ ucfirst(str_replace('_', ' ', $type)) }}</h2>
+                <table id="{{ $type }}-table" class="min-w-full bg-white border border-gray-300 mb-4">
+                    <thead>
+                        <tr>
+                            @if (isset($data[$type][0]))
+                                @foreach ($data[$type][0] as $header)
+                                    <th class="py-2 px-4 border-b">{{ $header }}</th>
+                                @endforeach
+                                <th class="py-2 px-4 border-b">Aksi</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data[$type] as $index => $row)
+                            @if ($index > 0)
+                                <tr id="{{ $type }}-row-{{ $index }}">
+                                    @foreach ($row as $cell)
+                                        <td class="py-2 px-4 border-b text-center">{{ $cell }}</td>
+                                    @endforeach
+                                    <td class="py-2 px-4 border-b text-center">
+                                        <!-- Edit dan Hapus -->
+                                        <a onclick="editRow('{{ $type }}', {{ $index }})" class="text-blue-500 hover:text-blue-700 hover:cursor-pointer">Edit</a>
+                                        <form action="{{ route('referensi.destroy', ['type' => $type, 'rowIndex' => $index]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700 ml-2 bg-transparent border-none cursor-pointer">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <!-- Form untuk menambah data -->
+                <form id="{{ $type }}-form" action="{{ route('referensi.store', $type) }}" method="POST" class="mb-8 flex justify-center">
+                    @csrf
+                    @foreach($data[$type][0] as $key => $header)
+                        @if ($key > 0) <!-- Jangan tampilkan input untuk nomor otomatis -->
+                            <input type="text" name="column{{ $key }}" placeholder="Ketikkan {{ strtolower($header) }}..." class="p-2 border border-gray-300 rounded" required>
+                        @endif
+                    @endforeach                
+                    <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded">Tambah Data</button>
+                </form>
             @endforeach
-          </tbody>
-        </table>
-        <div class="mt-4">
-          <button type="submit" class="bg-green-600 text-white font-medium py-2 px-4 rounded hover:bg-green-700">Update</button>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 
-<!-- Popup Modal for Edit -->
-<div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 justify-center items-center hidden">
-  <div class="bg-white p-8 rounded-lg shadow-lg">
-    <h2 class="text-xl font-bold mb-4">Edit Merk Kendaraan</h2>
-    <input type="text" id="editMerkInput" class="w-full p-2 border border-gray-300 rounded mb-4">
-    <button id="saveEdit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Save</button>
-    <button id="closeModal" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Close</button>
-  </div>
-</div>
+<!-- Button Mengambang -->
+<a href="#" class="fixed flex flex-col justify-center items-center bottom-4 right-4 bg-blue-500 text-white px-4 py-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
+    <i class="fa-solid fa-print fa-xl mt-3"></i>
+    <h1 class="mt-3">PRINT</h1>
+</a>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  let currentEditIndex = null;
+function editRow(type, index) {
+    const row = document.getElementById(`${type}-row-${index}`);
+    const cells = row.getElementsByTagName('td');
+    const form = document.getElementById(`${type}-form`);
 
-  // Handle Add Row
-  document.getElementById('addMerkKendaraan').addEventListener('click', function() {
-    const tbody = document.getElementById('merkKendaraanTableBody');
-    const newIndex = tbody.querySelectorAll('tr').length + 1;
-    const newRow = `
-      <tr class="bg-white border-b hover:bg-gray-50">
-        <td class="px-6 py-4">${newIndex}</td>
-        <td class="px-6 py-4"><input type="text" name="merkKendaraanData[${newIndex}][merk]" class="w-full px-2 py-1 border border-gray-300 rounded" /></td>
-        <td class="px-6 py-4">
-          <button type="button" class="edit-btn bg-yellow-500 text-white py-1 px-3 rounded" data-index="${newIndex}">Edit</button>
-          <button type="button" class="remove-btn bg-red-600 text-white py-1 px-3 rounded" data-index="${newIndex}">Remove</button>
-        </td>
-      </tr>
-    `;
-    tbody.insertAdjacentHTML('beforeend', newRow);
-  });
+    if (form) {
+        form.innerHTML = ''; // Kosongkan form sebelum menambah input
+        // Tambahkan input hidden untuk CSRF token
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
 
-  // Handle Edit Button
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('edit-btn')) {
-      currentEditIndex = e.target.getAttribute('data-index');
-      const row = document.querySelector(`[name="merkKendaraanData[${currentEditIndex}][merk]"]`).value;
-      document.getElementById('editMerkInput').value = row;
-      document.getElementById('editModal').classList.remove('hidden');
+        for (let i = 1; i < cells.length - 1; i++) { // Mulai dari index 1 untuk mengabaikan nomor dan kolom aksi
+            const cellValue = cells[i].innerText;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = `column${i+1}`;
+            input.value = cellValue;
+            input.placeholder = `Ketikkan data ${i+1}`;
+            input.className = 'p-2 border border-gray-300 rounded';
+            form.appendChild(input);
+        }
+
+        const submitButton = document.createElement('button');
+        submitButton.type = 'submit';
+        submitButton.className = 'ml-2 px-4 py-2 bg-green-500 text-white rounded';
+        submitButton.innerText = 'Simpan';
+        form.appendChild(submitButton);
+        form.action = `{{ url('/referensi/update') }}/${type}/${index}`; // Update URL action
     }
-  });
-
-  // Handle Save Edit
-  document.getElementById('saveEdit').addEventListener('click', function() {
-    const newValue = document.getElementById('editMerkInput').value;
-    document.querySelector(`[name="merkKendaraanData[${currentEditIndex}][merk]"]`).value = newValue;
-    document.getElementById('editModal').classList.add('hidden');
-  });
-
-  // Handle Remove Row
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-btn')) {
-      e.target.closest('tr').remove();
-    }
-  });
-
-  // Close Modal
-  document.getElementById('closeModal').addEventListener('click', function() {
-    document.getElementById('editModal').classList.add('hidden');
-  });
-});
+}
 </script>
 @endsection

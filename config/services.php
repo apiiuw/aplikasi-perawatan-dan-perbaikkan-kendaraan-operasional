@@ -39,7 +39,12 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT', 'http://localhost:8000/auth/callback'),
+        'sheets_spreadsheet_id' => env('GOOGLE_SHEETS_SPREADSHEET_ID'),
     ],
 
+    'google_sheets' => [
+        'api_key' => env('GOOGLE_SHEETS_API_KEY'),
+        'spreadsheet_id' => env('GOOGLE_SHEETS_SPREADSHEET_ID'),
+    ],
 
 ];

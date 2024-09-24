@@ -65,13 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/identitas/update', [IdentitasController::class, 'update'])->name('identitas.update');
     // 
 
-    Route::get('/referensi', [ReferensiController::class, 'show'])->name('referensi.show')->middleware('auth');
-
-    Route::post('/referensi/update', [ReferensiController::class, 'update'])->name('referensi.update')->middleware('auth');
-
-    Route::post('/referensi/add', [ReferensiController::class, 'add'])->name('referensi.add')->middleware('auth');
-
-    Route::post('/referensi/remove', [ReferensiController::class, 'remove'])->name('referensi.remove');
+    Route::get('/referensi', [ReferensiController::class, 'index'])->name('referensi.index');
+    Route::post('/referensi/store/{type}', [ReferensiController::class, 'store'])->name('referensi.store');
+    Route::post('/referensi/update/{type}/{rowIndex}', [ReferensiController::class, 'update'])->name('referensi.update');
+    Route::delete('/referensi/destroy/{type}/{rowIndex}', [ReferensiController::class, 'destroy'])->name('referensi.destroy');    
 
     Route::get('/laporan/kategori', function () {
         return view('laporan.kategori', [
