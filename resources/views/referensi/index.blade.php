@@ -56,11 +56,21 @@
     </div>
 </div>
 
-<!-- Button Mengambang -->
-<a href="#" class="fixed flex flex-col justify-center items-center bottom-4 right-4 bg-blue-500 text-white px-4 py-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
+<!-- Button Print -->
+<a href="https://docs.google.com/spreadsheets/d/1mfB-fDXonpoB34byZ-0UZaT7tOZSt6-4Cg50nd4rs-M/export?format=pdf&gid=0&portrait=false&gridlines=false&fzr=false&attachment=false&filename=Referensi%20Aplikasi%20Perawatan%20Dan%20Perbaikan%20Kendaraan%20Operasional" 
+   target="_blank" 
+   class="fixed flex flex-col justify-center items-center bottom-4 right-4 bg-blue-500 text-white px-4 py-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
     <i class="fa-solid fa-print fa-xl mt-3"></i>
     <h1 class="mt-3">PRINT</h1>
 </a>
+
+{{-- <!-- Button Print -->
+<a href="https://docs.google.com/spreadsheets/d/1mfB-fDXonpoB34byZ-0UZaT7tOZSt6-4Cg50nd4rs-M/export?format=pdf&gid=0&gridlines=false&notes=false" 
+   target="_blank" 
+   class="fixed flex flex-col justify-center items-center bottom-4 right-4 bg-blue-500 text-white px-4 py-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
+    <i class="fa-solid fa-print fa-xl mt-3"></i>
+    <h1 class="mt-3">PRINT</h1>
+</a> --}}
 
 <script>
 function editRow(type, index) {
