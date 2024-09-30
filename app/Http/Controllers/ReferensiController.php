@@ -30,12 +30,10 @@ class ReferensiController extends Controller
             $data[$key] = $this->googleSheetService->getSheetData($range);
         }
 
-        // Dapatkan data pengguna yang sedang login
         $user = Auth::user();
         $namaPengabiministrasi = $user->nama_pengabiministrasi;
         $jabatan = $user->jabatan;
 
-        // Update kolom K29 dengan nama_pengabiministrasi dan K23 dengan jabatan
         $this->googleSheetService->updateCell('Referensi!K29', $namaPengabiministrasi);
         $this->googleSheetService->updateCell('Referensi!K23', $jabatan);
 
@@ -48,7 +46,6 @@ class ReferensiController extends Controller
 
     public function store(Request $request, $type)
     {
-        // Validasi dan simpan data ke Google Sheets berdasarkan tipe data
         $this->googleSheetService->addRow($type, $request->except('_token'));
         return redirect()->route('referensi.index')->with('success', 'Data berhasil ditambahkan');
     }

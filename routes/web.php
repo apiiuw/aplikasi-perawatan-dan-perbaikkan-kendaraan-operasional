@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\ReferensiController;
+use App\Http\Controllers\DatabaseKendaraanController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,12 +85,10 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    Route::get('/database/kendaraan', function () {
-        return view('database.kendaraan', [
-            "active" => "database.kendaraan",
-            "title" => "Database Kendaraan",
-        ]);
-    });
+    Route::get('/database/kendaraan', [DatabaseKendaraanController::class, 'index'])->name('databaseKendaraan.index');
+    Route::post('/database/kendaraan/store/{type}', [DatabaseKendaraanController::class, 'store'])->name('databaseKendaraan.store');
+    Route::post('/database/kendaraan/update/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'update'])->name('databaseKendaraan.update');
+    Route::delete('/database/kendaraan/destroy/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'destroy'])->name('databaseKendaraan.destroy');
 
     Route::get('/database/transaksi', function () {
         return view('database.transaksi', [

@@ -130,7 +130,6 @@ class GoogleSheetService
     
         $range = $ranges[$type];
     
-        // rowIndex dihitung sebagai rowNumber + 4
         $rowIndex = $rowNumber + 4;
     
         $values = [
@@ -167,7 +166,6 @@ class GoogleSheetService
 
         $range = $ranges[$type];
 
-        // Kosongkan baris dengan memberikan nilai kosong ("")
         $values = [
             ["", ""]
         ];
