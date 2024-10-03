@@ -4,7 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 
-class GoogleSheetService
+class ReferensiGoogleSheetService
 {
     protected $client;
     protected $spreadsheetId;

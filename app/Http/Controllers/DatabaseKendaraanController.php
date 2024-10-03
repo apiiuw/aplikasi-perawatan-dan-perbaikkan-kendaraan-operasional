@@ -2,57 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\GoogleSheetService;
+use App\Services\DatKenGoogleSheetService;
 use Illuminate\Http\Request;
 
 class DatabaseKendaraanController extends Controller
 {
     protected $googleSheetService;
 
-    public function __construct(GoogleSheetService $googleSheetService)
+    public function __construct(DatKenGoogleSheetService $googleSheetService)
     {
         $this->googleSheetService = $googleSheetService;
     }
 
     public function index()
     {
-        $ranges = [
-            'data_kendaraan' => 'DatabaseKendaraan!A4:AB9999', // Pastikan untuk mencakup semua kolom yang Anda butuhkan
-        ];
+        // Mendapatkan data dari Google Sheets
+        $dataKendaraan = $this->googleSheetService->getSheetData('DatabaseKendaraan!A4:Z'); // Sesuaikan range data
+        
+        // Inisialisasi variabel title dan active
+        $title = 'Database Kendaraan';
+        $active = 'database.kendaraan';
     
-        $data = [];
-        foreach ($ranges as $key => $range) {
-            $sheetData = $this->googleSheetService->getSheetData($range);
-            if (is_array($sheetData) && count($sheetData) > 0) {
-                $data[$key] = $sheetData; // Simpan data berdasarkan kunci
-            } else {
-                $data[$key] = []; // Atur ke array kosong jika tidak ada data
-            }
+        // Cek apakah data kendaraan tersedia
+        if (is_array($dataKendaraan) && count($dataKendaraan) > 0) {
+            return view('database.kendaraan', [
+                'data' => ['data_kendaraan' => $dataKendaraan],
+                'title' => $title,
+                'active' => $active
+            ]);
+        } else {
+            return view('database.kendaraan', [
+                'data' => ['data_kendaraan' => []],
+                'title' => $title,
+                'active' => $active
+            ]);
         }
-    
-        return view('database.kendaraan', [
-            'data' => $data,
-            'title' => 'Database Kendaraan',
-            'active' => 'database.kendaraan',
-        ]);
     }
-         
-
-    public function store(Request $request, $type)
-    {
-        $this->googleSheetService->addRow($type, $request->except('_token'));
-        return redirect()->route('databaseKendaraan.index')->with('success', 'Data berhasil ditambahkan');
-    }
-
-    public function update(Request $request, $type, $rowIndex)
-    {
-        $this->googleSheetService->updateRow($type, $rowIndex, $request->except('_token'));
-        return redirect()->route('databaseKendaraan.index')->with('success', 'Data berhasil diupdate');
-    }
-
-    public function destroy($type, $rowIndex)
-    {
-        $this->googleSheetService->deleteRow($type, $rowIndex);
-        return redirect()->route('databaseKendaraan.index')->with('success', 'Data berhasil dihapus');
-    }    
 }

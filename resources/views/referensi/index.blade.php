@@ -4,7 +4,10 @@
 <div class="p-4 sm:ml-64">
     <div class="p-4 mt-14">
         <div class="container mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-4">Data Referensi</h1>
+            <div class="flex justify-start items-center mb-4 gap-x-2">
+                <i class="fa-solid fa-folder-open fa-xl"></i>
+                <h1 class="text-2xl font-bold">Referensi</h1>
+            </div>
 
             @foreach(['merk_kendaraan', 'jenis_perawatan', 'bahan_bakar', 'bulan', 'tahun'] as $type)
                 <h2 class="text-xl font-semibold mb-2">{{ ucfirst(str_replace('_', ' ', $type)) }}</h2>
@@ -56,13 +59,15 @@
     </div>
 </div>
 
-<!-- Button Print -->
-<a href="https://docs.google.com/spreadsheets/d/1mfB-fDXonpoB34byZ-0UZaT7tOZSt6-4Cg50nd4rs-M/export?format=pdf&gid=0&size=A4&portrait=false&gridlines=false&fzr=false&attachment=false&filename=Referensi%20Aplikasi%20Perawatan%20Dan%20Perbaikan%20Kendaraan%20Operasional" 
-   target="_blank" 
-   class="fixed flex flex-col justify-center items-center bottom-4 right-4 bg-blue-500 text-white px-4 py-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-300">
-    <i class="fa-solid fa-print fa-xl mt-3"></i>
-    <h1 class="mt-3">PRINT</h1>
-</a>
+<div class="fixed flex justify-center items-center bottom-3 right-4 gap-x-3">
+    <!-- Button Print -->
+    <a href="https://docs.google.com/spreadsheets/d/1mfB-fDXonpoB34byZ-0UZaT7tOZSt6-4Cg50nd4rs-M/export?format=pdf&gid=0&size=A4&portrait=false&gridlines=false&fzr=false&attachment=false&filename=Referensi%20Aplikasi%20Perawatan%20Dan%20Perbaikan%20Kendaraan%20Operasional" 
+    target="_blank" 
+    class="flex flex-col justify-center items-center bg-blue-500 text-white px-5 py-4 rounded-full shadow-sm shadow-black hover:bg-blue-700 transition duration-300">
+        <i class="fa-solid fa-print fa-xl mt-3"></i>
+        <h1 class="mt-3">PRINT</h1>
+    </a>
+</div>
 
 <script>
 function editRow(type, index) {

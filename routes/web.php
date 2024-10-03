@@ -15,32 +15,27 @@ Route::get('/register', function () {
         "title" => "Register",
     ]);
 });
+Route::post('/register', [RegisterController::class, 'register'])->name('register'); // Route untuk memproses pendaftaran
+//
 
-// Route untuk memproses pendaftaran
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
-
-// Route untuk halaman login
+// Route untuk login
 Route::get('/login', function () {
     return view('login.index', [
         "active" => "beranda",
         "title" => "Login",
     ]);
 })->name('login')->middleware('guest');
-
-// Route untuk memproses login
-Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
-
-// Route untuk login dengan Google
-Route::get('/auth/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.login');
-
-// Route untuk callback dari Google
-Route::get('/auth/callback', [LoginController::class, 'handleGoogleCallback']);
+Route::post('/login', [LoginController::class, 'login'])->middleware('guest'); // Untuk memproses login
+Route::get('/auth/redirect', [LoginController::class, 'redirectToGoogle'])->name('google.login'); // Untuk login dengan Google
+Route::get('/auth/callback', [LoginController::class, 'handleGoogleCallback']); // Untuk callback dari Google
+//
 
 // Route untuk logout
 Route::post('/logout', function () {
     Auth::logout();
     return redirect('/login');
 })->name('logout');
+//
 
 // Route yang mengharuskan pengguna login terlebih dahulu
 Route::middleware(['auth'])->group(function () {
@@ -58,42 +53,47 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    // Route untuk menampilkan form edit identitas
+    // Route untuk identitas
     Route::get('/identitas/edit', [IdentitasController::class, 'edit'])->name('identitas.edit');
-    // 
-
-    // Route untuk melakukan update identitas
     Route::put('/identitas/update', [IdentitasController::class, 'update'])->name('identitas.update');
     // 
 
-    Route::get('/referensi', [ReferensiController::class, 'index'])->name('referensi.index');
-    Route::post('/referensi/store/{type}', [ReferensiController::class, 'store'])->name('referensi.store');
-    Route::post('/referensi/update/{type}/{rowIndex}', [ReferensiController::class, 'update'])->name('referensi.update');
-    Route::delete('/referensi/destroy/{type}/{rowIndex}', [ReferensiController::class, 'destroy'])->name('referensi.destroy');    
+    // Route untuk referensi page
+    Route::get('/referensi', [ReferensiController::class, 'index'])->name('referensi.index');   // Untuk membuka halaman
+    Route::post('/referensi/store/{type}', [ReferensiController::class, 'store'])->name('referensi.store'); // Untuk proses tambah data
+    Route::post('/referensi/update/{type}/{rowIndex}', [ReferensiController::class, 'update'])->name('referensi.update');   // Untuk proses update data
+    Route::delete('/referensi/destroy/{type}/{rowIndex}', [ReferensiController::class, 'destroy'])->name('referensi.destroy');  // Untuk proses hapus data
+    // 
 
+    // Route untuk laporan kategori
     Route::get('/laporan/kategori', function () {
         return view('laporan.kategori', [
             "active" => "laporan.kategori",
             "title" => "Laporan Kategori",
         ]);
     });
+    //
 
+    // Route untuk laporan transaksi
     Route::get('/laporan/transaksi', function () {
         return view('laporan.transaksi', [
             "active" => "laporan.transaksi",
             "title" => "Laporan Transaksi",
         ]);
     });
+    //
 
-    Route::get('/database/kendaraan', [DatabaseKendaraanController::class, 'index'])->name('databaseKendaraan.index');
-    Route::post('/database/kendaraan/store/{type}', [DatabaseKendaraanController::class, 'store'])->name('databaseKendaraan.store');
-    Route::post('/database/kendaraan/update/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'update'])->name('databaseKendaraan.update');
-    Route::delete('/database/kendaraan/destroy/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'destroy'])->name('databaseKendaraan.destroy');
+    // Route untuk database kendaraan
+    Route::get('/database/kendaraan', [DatabaseKendaraanController::class, 'index'])->name('database.kendaraan');   // Untuk membuka halaman
+    Route::post('/database/kendaraan/update/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'update'])->name('databaseKendaraan.update');  // Untuk proses update data
+    Route::delete('/database/kendaraan/destroy/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'destroy'])->name('databaseKendaraan.destroy'); // Untuk proses hapus data
 
+    // Route untuk database transaksi
     Route::get('/database/transaksi', function () {
         return view('database.transaksi', [
             "active" => "database.transaksi",
             "title" => "Database Transaksi",
         ]);
     });
+    //
 });

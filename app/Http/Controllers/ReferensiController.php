@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\GoogleSheetService;
+use App\Services\ReferensiGoogleSheetService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +10,7 @@ class ReferensiController extends Controller
 {
     protected $googleSheetService;
 
-    public function __construct(GoogleSheetService $googleSheetService)
+    public function __construct(ReferensiGoogleSheetService $googleSheetService)
     {
         $this->googleSheetService = $googleSheetService;
     }
