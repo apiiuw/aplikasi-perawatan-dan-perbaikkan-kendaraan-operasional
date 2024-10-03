@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\ReferensiController;
 use App\Http\Controllers\DatabaseKendaraanController;
+use App\Http\Controllers\DatabaseTransaksiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,13 +88,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/database/kendaraan', [DatabaseKendaraanController::class, 'index'])->name('database.kendaraan');   // Untuk membuka halaman
     Route::post('/database/kendaraan/update/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'update'])->name('databaseKendaraan.update');  // Untuk proses update data
     Route::delete('/database/kendaraan/destroy/{type}/{rowIndex}', [DatabaseKendaraanController::class, 'destroy'])->name('databaseKendaraan.destroy'); // Untuk proses hapus data
+    //
 
     // Route untuk database transaksi
-    Route::get('/database/transaksi', function () {
-        return view('database.transaksi', [
-            "active" => "database.transaksi",
-            "title" => "Database Transaksi",
-        ]);
-    });
+    Route::get('/database/transaksi', [DatabaseTransaksiController::class, 'index'])->name('database.transaksi');   // Untuk membuka halaman
+    Route::post('/database/transaksi/update/{type}/{rowIndex}', [DatabaseTransaksiController::class, 'update'])->name('databaseTransaksi.update');  // Untuk proses update data
+    Route::delete('/database/transaksi/destroy/{type}/{rowIndex}', [DatabaseTransaksiController::class, 'destroy'])->name('databaseTransaksi.destroy'); // Untuk proses hapus data
     //
+
 });

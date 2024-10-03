@@ -17,7 +17,7 @@ class DatabaseKendaraanController extends Controller
     public function index()
     {
         // Mendapatkan data dari Google Sheets
-        $dataKendaraan = $this->googleSheetService->getSheetData('DatabaseKendaraan!A4:Z'); // Sesuaikan range data
+        $dataKendaraan = $this->googleSheetService->getSheetData('DatabaseKendaraan!A4:AB'); // Sesuaikan range data
         
         // Inisialisasi variabel title dan active
         $title = 'Database Kendaraan';
