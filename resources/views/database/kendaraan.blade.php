@@ -17,7 +17,6 @@
                                 @foreach ($data['data_kendaraan'][0] as $header)
                                     <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">{{ $header }}</th>
                                 @endforeach
-                                <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Aksi</th>
                             @else
                                 <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Kolom 1</th>
                                 <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Kolom 2</th>
@@ -33,14 +32,6 @@
                                         @foreach ($row as $cell)
                                             <td class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">{{ $cell !== null && $cell !== '' ? $cell : '-' }}</td>
                                         @endforeach
-                                        <td class="py-2 border-b border-gray-300 text-center px-4 whitespace-nowrap">
-                                            <a onclick="editRow('kendaraan', {{ $index }})" class="text-blue-500 hover:text-blue-700 hover:cursor-pointer">Edit</a>
-                                            <form action="{{ route('databaseKendaraan.destroy', ['type' => 'kendaraan', 'rowIndex' => $index]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 ml-2 bg-transparent border-none cursor-pointer">Hapus</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                 @endif
                             @endforeach

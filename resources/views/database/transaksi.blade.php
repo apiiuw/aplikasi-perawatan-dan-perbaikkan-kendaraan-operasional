@@ -17,7 +17,6 @@
                                 @foreach ($data['data_transaksi'][0] as $header)
                                     <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">{{ $header }}</th>
                                 @endforeach
-                                <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Aksi</th>
                             @else
                                 <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Kolom 1</th>
                                 <th class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">Kolom 2</th>
@@ -31,16 +30,10 @@
                                 @if ($index > 0)
                                     <tr id="transaksi-row-{{ $index }}">
                                         @foreach ($row as $cell)
-                                            <td class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">{{ $cell !== null && $cell !== '' ? $cell : '-' }}</td>
+                                            <td class="py-2 border-b border-gray-300 text-center px-4 border-r whitespace-nowrap">
+                                                {{ $cell !== null && $cell !== '' ? (is_numeric($cell) ? number_format($cell, 0, ',', '.') : $cell) : '-' }}
+                                            </td>
                                         @endforeach
-                                        <td class="py-2 border-b border-gray-300 text-center px-4 whitespace-nowrap">
-                                            <a onclick="editRow('transaksi', {{ $index }})" class="text-blue-500 hover:text-blue-700 hover:cursor-pointer">Edit</a>
-                                            <form action="{{ route('databaseTransaksi.destroy', ['type' => 'transaksi', 'rowIndex' => $index]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 ml-2 bg-transparent border-none cursor-pointer">Hapus</button>
-                                            </form>
-                                        </td>
                                     </tr>
                                 @endif
                             @endforeach
@@ -49,7 +42,7 @@
                                 <td class="py-2 border-b border-gray-300 text-center px-4" colspan="{{ count($data['data_transaksi'][0]) }}">Tidak ada data yang tersedia.</td>
                             </tr>
                         @endif
-                    </tbody>
+                    </tbody>                    
                 </table>
             </div>
         </div>
