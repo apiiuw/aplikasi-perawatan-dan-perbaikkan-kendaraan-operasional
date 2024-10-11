@@ -9,7 +9,7 @@
                 <h1 class="text-2xl font-bold">Data Transaksi</h1>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-visible">
                 <table id="transaksi-table" class="min-w-full bg-white border border-gray-300 mb-4 mx-4" style="border-collapse: collapse;">
                     <thead>
                         <tr>

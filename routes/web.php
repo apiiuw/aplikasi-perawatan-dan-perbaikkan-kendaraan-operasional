@@ -6,6 +6,7 @@ use App\Http\Controllers\IdentitasController;
 use App\Http\Controllers\ReferensiController;
 use App\Http\Controllers\DatabaseKendaraanController;
 use App\Http\Controllers\DatabaseTransaksiController;
+use App\Http\Controllers\LaporanKatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -67,12 +68,7 @@ Route::middleware(['auth'])->group(function () {
     // 
 
     // Route untuk laporan kategori
-    Route::get('/laporan/kategori', function () {
-        return view('laporan.kategori', [
-            "active" => "laporan.kategori",
-            "title" => "Laporan Kategori",
-        ]);
-    });
+    Route::get('/laporan/kategori', [LaporanKatController::class, 'index'])->name('laporan.kategori');
     //
 
     // Route untuk laporan transaksi
