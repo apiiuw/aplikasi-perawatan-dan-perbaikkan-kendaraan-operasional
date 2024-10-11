@@ -24,7 +24,7 @@
 
             <p class="mt-3 text-xl text-center text-gray-600">
                 Buat Akun Baru!
-            </p>
+            </p> 
 
             <form method="POST" action="{{ route('register') }}">
                 @csrf
