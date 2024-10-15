@@ -19,7 +19,7 @@
                             <option value="tahunan">Tahunan</option>
                         </select>
                     </div>
-
+                
                     <div id="bulan-container" class="hidden">
                         <label for="bulan" class="block text-sm font-medium text-gray-800">Bulan</label>
                         <select id="bulan" name="bulan" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
@@ -29,7 +29,7 @@
                             @endforeach
                         </select>
                     </div>
-
+                
                     <div id="tahun-container" class="hidden">
                         <label for="tahun" class="block text-sm font-medium text-gray-800">Tahun</label>
                         <select id="tahun" name="tahun" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
@@ -137,14 +137,11 @@
         @endif
     </div>
 </div>
-@endsection
-
-@section('scripts')
 <script>
     document.getElementById('periode').addEventListener('change', function() {
         const periodeValue = this.value;
         document.getElementById('bulan-container').style.display = periodeValue === 'bulanan' ? 'block' : 'none';
-        document.getElementById('tahun-container').style.display = periodeValue === 'tahunan' ? 'block' : 'none';
+        document.getElementById('tahun-container').style.display = (periodeValue === 'bulanan' || periodeValue === 'tahunan') ? 'block' : 'none';
     });
 
     document.getElementById('ubah-judul-button').addEventListener('click', function() {
