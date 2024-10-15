@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Route untuk laporan kategori
     Route::get('/laporan/kategori', [LaporanKatController::class, 'index'])->name('laporan.kategori');
+    Route::post('/laporan/kategori/search', [LaporanKatController::class, 'search']);
     //
 
     // Route untuk laporan transaksi

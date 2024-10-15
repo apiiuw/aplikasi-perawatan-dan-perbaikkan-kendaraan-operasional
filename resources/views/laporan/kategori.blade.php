@@ -45,13 +45,13 @@
                     <label for="jenis_perawatan" class="block text-sm font-medium text-gray-800">Jenis Perawatan</label>
                     <select id="jenis_perawatan" name="jenis_perawatan" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         <option value="">Semua</option>
-                        <option value="pengisian-bbm">Pengisian BBM</option>
-                        <option value="servis-rutin">Servis Rutin</option>
-                        <option value="perbaikan">Perbaikan</option>
-                        <option value="pergantian">Pergantian</option>
-                        <option value="bayar-pajak">Bayar Pajak</option>
-                        <option value="emoney">E-money</option>
-                        <option value="bayar-parkir">Bayar Parkir</option>
+                        <option value="Pengisian BBM">Pengisian BBM</option>
+                        <option value="sServis Rutin">Servis Rutin</option>
+                        <option value="Perbaikan">Perbaikan</option>
+                        <option value="Pergantian">Pergantian</option>
+                        <option value="Bayar Pajak">Bayar Pajak</option>
+                        <option value="Emoney">E-money</option>
+                        <option value="Bayar Parkir">Bayar Parkir</option>
                     </select>
                 </div>
 
@@ -59,16 +59,16 @@
                     <label for="kendaraan" class="block text-sm font-medium text-gray-800">Kendaraan</label>
                     <select id="kendaraan" name="kendaraan" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                         <option value="">Semua</option>
-                        @foreach (['kendaraan1', 'kendaraan2'] as $kendaraan)
-                            <option value="{{ $kendaraan }}">{{ ucfirst($kendaraan) }}</option>
+                        @foreach ($kendaraan as $item)
+                            <option value="{{ $item }}">{{ ucfirst($item) }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div>                
 
                 <div>
                     <label for="tanggal_laporan" class="block text-sm font-medium text-gray-800">Tanggal Laporan</label>
-                    <input type="date" id="tanggal_laporan" name="tanggal_laporan" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                </div>
+                    <input type="text" id="tanggal_laporan" name="tanggal_laporan" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm pl-1">
+                </div>                
 
                 <div class="flex flex-col items-end">
                     <button type="submit" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-300">
@@ -144,6 +144,21 @@
         document.getElementById('tahun-container').style.display = (periodeValue === 'bulanan' || periodeValue === 'tahunan') ? 'block' : 'none';
     });
 
+    flatpickr("#tanggal_laporan", {
+        dateFormat: "d F Y", // Format tanggal: 10 Oktober 2024
+        locale: {
+            firstDayOfWeek: 1, // Mulai dari hari Senin
+            weekdays: {
+                shorthand: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                longhand: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+            },
+            months: {
+                shorthand: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                longhand: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+            },
+        },
+    });
+
     document.getElementById('ubah-judul-button').addEventListener('click', function() {
         const changeTitleContainer = document.getElementById('change-title-container');
         changeTitleContainer.classList.toggle('hidden');
@@ -155,6 +170,62 @@
             document.getElementById('filter-title').innerText = newTitle;
             document.getElementById('change-title-container').classList.add('hidden');
         }
+    });
+
+    document.getElementById('filter-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Mencegah halaman refresh
+
+    // Ambil nilai dari form
+    const periode = document.getElementById('periode').value;
+    const bulan = document.getElementById('bulan').value;
+    const tahun = document.getElementById('tahun').value;
+    const jenisPerawatan = document.getElementById('jenis_perawatan').value;
+    const kendaraan = document.getElementById('kendaraan').value;
+    const tanggalLaporan = document.getElementById('tanggal_laporan').value;
+
+    // Kirim data pencarian ke backend dengan Fetch API atau Ajax
+    fetch('/laporan/kategori/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            periode: periode,
+            bulan: bulan,
+            tahun: tahun,
+            jenis_perawatan: jenisPerawatan,
+            kendaraan: kendaraan,
+            tanggal_laporan: tanggalLaporan
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update tampilan dengan data hasil pencarian
+        const laporanContainer = document.querySelector('tbody');
+        laporanContainer.innerHTML = ''; // Kosongkan tabel sebelum update
+
+        if (data.laporan.length > 0) {
+            data.laporan.forEach((laporan, index) => {
+                const row = `
+                    <tr>
+                        <td class="px-2 py-3 text-center text-sm">${index + 1}</td>
+                        <td class="px-6 py-3 text-center text-sm">${laporan.nomor_polisi}</td>
+                        <td class="px-6 py-3 text-center text-sm">${laporan.tanggal}</td>
+                        <td class="px-6 py-3 text-center text-sm">${laporan.jenis_perawatan}</td>
+                        <td class="px-6 py-3 text-center text-sm">Rp ${laporan.total_biaya}</td>
+                    </tr>
+                `;
+                laporanContainer.innerHTML += row;
+            });
+        } else {
+            laporanContainer.innerHTML = '<tr><td colspan="5" class="text-center py-3">Tidak ada data yang ditemukan.</td></tr>';
+        }
+
+        // Update jumlah data yang dicari
+        document.getElementById('filtered-data').innerText = data.laporan.length;
+    })
+    .catch(error => console.error('Error:', error));
     });
 </script>
 @endsection

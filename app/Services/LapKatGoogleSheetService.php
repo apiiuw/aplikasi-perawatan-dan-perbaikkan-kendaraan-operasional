@@ -45,6 +45,27 @@ class LapKatGoogleSheetService
         }
     }
 
+    public function getKendaraanData()
+    {
+        // Tentukan range dari sheet DatabaseKendaraan
+        $range = 'DatabaseKendaraan!B5:B1000'; // Ambil data mulai dari baris ke-5 hingga akhir
+    
+        // Panggil fungsi getSheetData untuk mengambil data
+        $data = $this->getSheetData($range);
+    
+        // Array untuk menampung kendaraan
+        $kendaraan = [];
+    
+        // Loop data dan masukkan ke array kendaraan
+        foreach ($data as $row) {
+            if (!empty($row[0])) {
+                $kendaraan[] = $row[0]; // Kolom B menyimpan nama kendaraan
+            }
+        }
+    
+        return $kendaraan;
+    }    
+
     /**
      * Fungsi untuk mengambil dan memformat data laporan dari Google Sheets
      * @return array
