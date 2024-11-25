@@ -105,5 +105,46 @@ class LapKatGoogleSheetService
         }        
         return $laporan;
     }
+
+    public function searchLaporanData($searchQuery = null)
+    {
+        // Rentang data Google Sheets (menyesuaikan sheet dan range)
+        $range = 'DatabaseTransaksi!B5:BQ1000';
+        
+        // Ambil data laporan dari Google Sheets
+        $data = $this->getSheetData($range);
+        $laporan = [];
+    
+        foreach ($data as $row) {
+            if (isset($row[0], $row[1], $row[2], $row[3], $row[4], $row[16], $row[30])) {
+                $nomorPolisi = $row[0] ?? null; // Kolom B
+                $tanggal = ($row[1] ?? '') . ' ' . ($row[2] ?? '') . ' ' . ($row[3] ?? ''); // Kolom C, D, E
+                $jenisPerawatan = $row[4] ?? null; // Kolom F
+                $totalBiaya = $row[67] ?? null; // Kolom BQ
+                $tempatTransaksi = $row[30] ?? null; // Kolom BD
+    
+                // Jika ada query pencarian, cocokkan dengan nomor polisi
+                if ($searchQuery) {
+                    if (stripos($nomorPolisi, $searchQuery) === false) {
+                        continue; // Jika tidak cocok, lanjut ke baris berikutnya
+                    }
+                }
+    
+                // Tambahkan data ke array laporan jika nomor polisi tidak kosong
+                if ($nomorPolisi) {
+                    $laporan[] = (object)[
+                        'nomor_polisi' => $nomorPolisi,
+                        'tanggal' => $tanggal,
+                        'jenis_perawatan' => $jenisPerawatan,
+                        'total_biaya' => $totalBiaya,
+                        'tempat_transaksi' => $tempatTransaksi,
+                    ];
+                }
+            }
+        }
+    
+        return $laporan;
+    }
+    
     
 }
